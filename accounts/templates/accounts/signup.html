@@ -1,0 +1,27 @@
+<div class="wrapper" style="text-align:center;">
+    <h1>회원가입</h1>
+    <form method="POST">
+        {% csrf_token %}
+        닉네임 : <br>
+        <input type="text" name="nickname">
+        <br>
+        아이디 : <br>
+        <input type="text" name="username">
+        <br>
+        비밀번호 : <br>
+        <input type="password" name="password1">
+        <br>
+        비밀번호 확인 : <br>
+        <input type="password" name="password2">
+        <br>
+        동국대학교 이메일로만 가입 가능합니다.(ID@dongguk.edu)<br>
+        이메일 : <br>
+        <input type="email" name="email">
+        <br>
+        개인 채팅을 위해 자신의 오픈채팅 링크를 작성해주세요.<br>
+        카카오톡 개인 오픈채팅 링크 : <br>
+        <input type="url" name="chatting">
+        <br>
+        <input type="submit" class="btn btn-primary" value="Sign Up">
+    </form>
+</div>
