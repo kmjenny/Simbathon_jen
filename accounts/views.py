@@ -10,6 +10,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from email.message import EmailMessage
 from django.contrib.messages import constants as message
 from django.utils.encoding import force_bytes, force_str
+from django.views import generic
 
 import re
 
@@ -49,7 +50,7 @@ def logout(request):
 def home(request):
     return render(request, 'accounts/home.html')
 
-class Activate(View):
+class Activate(generic.View):
     def get(self, request, uidb64, token):
         try:
             uid = force_str(urlsafe_base64_decode(uidb64))
@@ -66,7 +67,7 @@ class Activate(View):
         except KeyError:
             return JsonResponse({'message':'INVALID_KEY'}, status=400)
 
-class Signup(View):
+class Signup(generic.View):
     def post(self, request):
         data = json.loads(request.body)
         try:

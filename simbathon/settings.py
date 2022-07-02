@@ -133,4 +133,4 @@ EMAIL_HOST_USER = 'kjn3008@gmail.com'
 EMAIL_HOST_PASSWORD = 'wosl4042413!'
 REDIRECT_PAGE = 'http://10.58.5.40:3000/signin'
 
-AUTH_USER_MODEL = 'account.User'
+AUTH_USER_MODEL = 'accounts.User'
