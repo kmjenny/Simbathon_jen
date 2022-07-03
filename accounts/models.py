@@ -3,10 +3,12 @@ from django.contrib.auth.models import (BaseUserManager, AbstractBaseUser)
 # Create your models here.
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, date_of_birth, password=None):
+    def create_user(self, email, date_of_birth, nickname, password=None):
         if not email:
             raise ValueError("Users must have an email address")
-
+        if not nickname:
+            raise ValueError("Users must have an nickname")
+            
         user = self.model(
             email=self.normalize_email(email),
             date_of_birth = date_of_birth,
@@ -17,7 +19,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, date_of_birth, password):
+    def create_superuser(self, email, date_of_birth, nickname, password):
         user = self.create_user(
             email,
             nickname = nickname,
@@ -48,10 +50,10 @@ class User(AbstractBaseUser):
     objects = UserManager()
 
     USERNAME_FIELD = 'nickname'
-    REQUIRED_FIELDS = ['date_of_birth']
+    REQUIRED_FIELDS = ['date_of_birth', 'email']
 
     def __str__(self):
-        return self.email
+        return self.nickname
 
     def has_perm(self, perm, obj=None):
         return True

@@ -11,6 +11,8 @@ from email.message import EmailMessage
 from django.contrib.messages import constants as message
 from django.utils.encoding import force_bytes, force_str
 from django.views import generic
+from .serializers import UserSerializer
+from rest_framework import generics
 
 import re
 
@@ -27,8 +29,8 @@ def signup(request):
             )
             auth.login(request, user)
             return redirect('/')
-        return render(request, 'accounts/signup.html')
-    return render(request, 'accounts/signup.html')
+        return render(request, 'signup.html')
+    return render(request, 'signup.html')
 
 def login(request):
     if request.method == 'POST':
@@ -37,7 +39,7 @@ def login(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             auth.login(request, user)
-            return redirect('home')
+            return redirect('accounts/home.html')
         else:
             return render(request, 'accounts/login.html', {'error':'username or password is incorrect.'})
     else:
@@ -45,7 +47,7 @@ def login(request):
 
 def logout(request):
     auth.logout(request)
-    return redirect('home')
+    return redirect('accounts/home.html')
 
 def home(request):
     return render(request, 'accounts/home.html')
@@ -54,7 +56,7 @@ class Activate(generic.View):
     def get(self, request, uidb64, token):
         try:
             uid = force_str(urlsafe_base64_decode(uidb64))
-            user = Users.objects.get(pk=uid)
+            user = User.objects.get(pk=uid)
             user_dic = jwt.decode(token, SECRET_KEY, algorithm='HS256')
             if user.id == user_dic["user"]:
                 user.is_active = True
@@ -77,10 +79,10 @@ class Signup(generic.View):
                 return JsonResponse({'message':'password check'}, status=400)
             else:
                 try:
-                    Users.objects.get(user=data['user'])
+                    User.objects.get(user=data['user'])
                     return JsonResponse({'message':'EXISTS ID'}, status=401)
-                except Users.DoesNotExist:
-                    user = Users.objects.create(
+                except User.DoesNotExist:
+                    user = User.objects.create(
                         user = data['user'],
                         email = data['email'],
                         password = bcrypt.hashpw(data['password'].encode('utf-8'),bcrypt.gensalt()).decode('utf-8'),
@@ -106,3 +108,7 @@ class Signup(generic.View):
             return JsonResponse({'message':'type wrong'}, status=403)
         except ValidationError:
             return JsonResponse({'message':'VALIDATION_ERROR'}, status=404)
+
+class UserCreate(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
